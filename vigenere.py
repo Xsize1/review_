@@ -1,5 +1,5 @@
 from global_var import alphabet_upper
-
+from global_var import alphabet_lower
 
 def vigenere_encrypt(source_file_way, result_file_way, key_word):
     # Эта функция шифрует текст шифром Вижинера
@@ -7,7 +7,9 @@ def vigenere_encrypt(source_file_way, result_file_way, key_word):
     # source_file_way файл с текстом
     # result_file_way файл куда будет записан заштфрованный текст
     # key_word ключ
+    key_text = ''
     result = ""
+    count_key = 0
     source_file = open(source_file_way, "r")
 
     new_text = ""
@@ -25,7 +27,22 @@ def vigenere_encrypt(source_file_way, result_file_way, key_word):
     key_word = tmp
 
     for i in range(len(new_text)):
-        result += alphabet_upper[alphabet_upper.find(new_text[i]) + alphabet_upper.find(key_word[i % len(key_word)])]
+        if new_text[i].isupper():
+            key_text += key_word[count_key].upper()
+        elif new_text[i].islower():
+            key_text += key_word[count_key]
+        else:
+            key_text += new_text[i]
+            continue
+        count_key += 1
+        if count_key == len(key_word):
+            count_key = 0
+
+    for i in range(len(new_text)):
+        needed_alph = alphabet_upper if new_text[i].isupper() else alphabet_lower
+        num_text = needed_alph.find(new_text[i])
+        num_key = needed_alph.find(key_text[i])
+        result += needed_alph[(num_text + num_key) % 26]
 
     # writing result
     result_file = open(result_file_way, "w")
